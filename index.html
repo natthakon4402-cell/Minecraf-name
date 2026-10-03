@@ -1,248 +1,55 @@
 <!DOCTYPE html>
-<html lang="th">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IR Remote nopi</title>
-    <style>
-        /* พื้นหลังสีเหลืองแป๋น ตัดเส้นหมาๆๆๆๆๆๆๆๆๆๆๆ สไตล์เด็กหัดลงสี */
-        body { 
-            background-color: yellow; 
-            color: blue; 
-            font-family: "Comic Sans MS", "Arial", sans-serif; 
-            padding: 10px; 
-            text-align: center; 
-        }
-
-        /* หัวข้อสีแดงสด พื้นหลังสีฟ้าสด ขอบสีดำหนาๆ */
-        .header-title {
-            font-size: 26px;
-            font-weight: bold;
-            color: red;
-            background-color: aqua;
-            padding: 10px;
-            border: 5px solid black;
-            display: inline-block;
-            margin: 10px 0;
-        }
-
-        /* ปุ่มเชื่อมต่อสีเขียวแป๋น */
-        .btn-connect { 
-            background-color: lime; 
-            color: black; 
-            width: 100%; 
-            max-width: 350px; 
-            padding: 15px; 
-            font-size: 18px; 
-            font-weight: bold;
-            border: 4px solid red; 
-            cursor: pointer; 
-            margin-bottom: 10px;
-        }
-
-        /* กล่องกรอกข้อมูลสีชมพูแป๋น */
-        .card-beginner { 
-            background-color: magenta; 
-            color: white;
-            padding: 15px; 
-            margin: 10px auto; 
-            max-width: 350px; 
-            border: 5px solid blue; 
-            text-align: left; 
-        }
-
-        label { font-size: 14px; font-weight: bold; display: block; margin-top: 5px; color: yellow; }
-
-        input { 
-            padding: 5px; 
-            margin: 3px 0 8px 0; 
-            width: 95%; 
-            background-color: white; 
-            color: black; 
-            border: 2px solid black; 
-            font-size: 14px;
-        }
-
-        /* ปุ่มเซฟสีส้มแป๋น */
-        .btn-save {
-            background-color: orange;
-            color: black;
-            width: 100%;
-            padding: 10px;
-            font-weight: bold;
-            border: 3px solid black;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* ตารางวางปุ่ม */
-        .grid { 
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px; 
-            max-width: 600px; 
-            margin: 15px auto; 
-        }
-
-        /* การ์ดปุ่มกดสีน้ำเงินสด */
-        .remote-box-beginner { 
-            background-color: blue; 
-            color: white;
-            padding: 8px; 
-            width: 130px;
-            border: 4px solid yellow; 
-            text-align: center;
-        }
-
-        .remote-box-beginner img { 
-            width: 100%; 
-            height: 80px; 
-            object-fit: cover; 
-            border: 2px solid white;
-            background-color: gray;
-        }
-
-        /* ปุ่มยิงสีแดงสด */
-        .btn-send { 
-            background-color: red; 
-            color: yellow; 
-            width: 100%; 
-            margin-top: 5px; 
-            padding: 8px 2px; 
-            border: 2px solid black;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-        }
-
-        /* ปุ่มลบสีม่วง */
-        .btn-del { 
-            background-color: purple; 
-            color: white; 
-            width: 100%; 
-            margin-top: 4px; 
-            padding: 3px; 
-            font-size: 11px; 
-            border: 1px solid black;
-            cursor: pointer;
-        }
-    </style>
+    <title>ปุ่มสวิตช์เปิดไฟแฟลช</title>
 </head>
-<body>
+<body style="background-color: black; color: white; text-align: center; padding-top: 50px;">
 
-    <div class="header-title">IR Remote of NOPPP</div>
-    <br>
-    <b id="status" style="color: red; background-color: white; padding: 3px;">สถานะ: ยังไม่ได้ต่อสาย</b>
-    <br><br>
+    <h1>สวิตช์สั่งเปิดไฟแฟลชเครื่อง</h1>
 
-    <button class="btn-connect" onclick="connectUSB()">กดตรงนี้เชื่อมต่อแล้วมันจะตู้มกับ  OTG</button>
+    <!-- ปุ่มสั่งงาน -->
+    <button onclick="toggleFlash()" style="font-size: 20px; padding: 15px 30px; cursor: pointer;">
+        เปิด / ปิด ไฟแฟลช
+    </button>
 
-    <!-- ฟอร์มเพิ่มปุ่ม -->
-    <div class="card-beginner">
-        <h3 style="margin:0; color:yellow; text-align:center;">+ เพิ่มปุ่มใหม่</h3>
-        <label>ชื่อปุ่ม:</label>
-        <input type="text" id="nameInput" placeholder="พิมพ์ชื่อปุ่มตรงนี้">
-        
-        <label>โค้ด HEX:</label>
-        <input type="text" id="hexInput" placeholder="พิมพ์โค้ด HEX ตรงนี้">
-        
-        <label>รูปภาพ:</label>
-        <input type="file" id="imgInput" accept="image/*" style="background:white; color:black;">
-        
-        <button class="btn-save" onclick="saveButton()">บันทึกปุ่ม</button>
-    </div>
-
-    <h2 style="color: red; background-color: white; display: inline-block; padding: 5px; border: 2px solid black;">ปุ่มกดของฉัน</h2>
-    <div id="remoteList" class="grid"></div>
+    <p id="status" style="color: yellow; margin-top: 20px;">สถานะ: ปิดอยู่</p>
 
     <script>
-        let port, writer;
+        let streamTrack = null; // ตัวแปรเก็บสายสัญญาณกล้อง
+        let isFlashOn = false;  // ตัวแปรเช็กสถานะ ไฟเปิดหรือปิดอยู่
 
-        async function connectUSB() {
+        async function toggleFlash() {
             try {
-                port = await navigator.serial.requestPort();
-                await port.open({ baudRate: 115200 });
-                writer = port.writable.getWriter();
-                document.getElementById('status').innerText = "สถานะ: ต่อสายสำเร็จแล้ว!";
-                document.getElementById('status').style.color = "green";
+                // ถ้ายังไม่ได้ต่อกับกล้อง ให้ขออนุญาตใช้กล้องหลังก่อน
+                if (!streamTrack) {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: 'environment' } // ดึงกล้องหลังที่มีไฟแฟลช
+                    });
+                    streamTrack = stream.getVideoTracks()[0];
+                }
+
+                // สลับสถานะ ปิด -> เปิด หรือ เปิด -> ปิด
+                isFlashOn = !isFlashOn;
+
+                // สั่งเปิด/ปิด ไฟแฟลชจริง
+                await streamTrack.applyConstraints({
+                    advanced: [{ torch: isFlashOn }]
+                });
+
+                // อัปเดตข้อความบนหน้าจอ
+                if (isFlashOn) {
+                    document.getElementById('status').innerText = 'สถานะ: ไฟแฟลชเปิดอยู่! 💡';
+                } else {
+                    document.getElementById('status').innerText = 'สถานะ: ปิดอยู่';
+                }
+
             } catch (err) {
-                alert("ต่อไม่ได้: " + err);
+                alert('เครื่องมึงไม่รองรับไฟแฟลช หรือไม่ได้เปิดอนุญาตกล้องว่ะไอ้นพ!');
             }
         }
-
-        async function sendToArduino(hexCode) {
-            if (!writer) {
-                alert("กดปุ่มเชื่อมต่อข้างบนก่อนคับบบบ!");
-                return;
-            }
-            const data = new TextEncoder().encode(hexCode + "\n");
-            await writer.write(data);
-        }
-
-        function saveButton() {
-            const name = document.getElementById('nameInput').value;
-            const hex = document.getElementById('hexInput').value;
-            const file = document.getElementById('imgInput').files[0];
-
-            if (!name || !hex) {
-                alert("พิมพ์ข้อมูลให้ครบก่อนอย่าขรี้ครั้นน!");
-                return;
-            }
-
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    saveToStorage(name, hex, e.target.result);
-                };
-                reader.readAsDataURL(file);
-            } else {
-                saveToStorage(name, hex, '');
-            }
-        }
-
-        function saveToStorage(name, hex, imgData) {
-            const list = JSON.parse(localStorage.getItem('noppp_beginner_remotes') || '[]');
-            list.push({ name, hex, img: imgData });
-            localStorage.setItem('noppp_beginner_remotes', JSON.stringify(list));
-            
-            document.getElementById('nameInput').value = '';
-            document.getElementById('hexInput').value = '';
-            document.getElementById('imgInput').value = '';
-            render();
-        }
-
-        function render() {
-            const container = document.getElementById('remoteList');
-            container.innerHTML = '';
-            const list = JSON.parse(localStorage.getItem('noppp_beginner_remotes') || '[]');
-
-            list.forEach((item, index) => {
-                const imgHTML = item.img 
-                    ? `<img src="${item.img}">` 
-                    : `<div style="height:50px;background:white;line-height:50px;color:black;font-size:10px;">ไม่มีรูปภาพ</div>`;
-                
-                const box = document.createElement('div');
-                box.className = 'remote-box-beginner';
-                box.innerHTML = `
-                    ${imgHTML}
-                    <div style="font-weight:bold; margin: 4px 0 0 0; font-size:13px; color:yellow;">${item.name}</div>
-                    <div style="color:white; font-size:10px;">${item.hex}</div>
-                    <button class="btn-send" onclick="sendToArduino('${item.hex}')">ยิงเลย!</button>
-                    <button class="btn-del" onclick="deleteItem(${index})">ลบทิ้ง</button>
-                `;
-                container.appendChild(box);
-            });
-        }
-
-        function deleteItem(index) {
-            const list = JSON.parse(localStorage.getItem('noppp_beginner_remotes') || '[]');
-            list.splice(index, 1);
-            localStorage.setItem('noppp_beginner_remotes', JSON.stringify(list));
-            render();
-        }
-
-        render();
     </script>
+
 </body>
 </html>
